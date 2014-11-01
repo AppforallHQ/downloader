@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from pymongo import MongoClient
+from __future__ import print_function
 import re,httplib,sys,json,subprocess
 import dateutil.parser,calendar,time
 
@@ -55,17 +55,15 @@ DATADIC = {u'sdev': u'supportedDevices',
 
 
 
-client = MongoClient()
-db = client.appdb
 
-query = db.apps.find({},timeout=False)
 
 class AppInfo:
     def getfilesize(self,n):
         return bytes2human(int(n))+'B'
-    def __init__(self,appid="",bundleId="",version=""):
+    def __init__(self,appid="",bundleId="",version="",logger=print):
         self.version=version
         self.conn = httplib.HTTPSConnection("itunes.apple.com")
+        self.logger = logger
         if appid != "":
             self.param = "id="+appid
         else:
@@ -85,13 +83,13 @@ class AppInfo:
         back = self.conn.getresponse().read()
         res = json.loads(back)
         if res[u'resultCount'] != 1:
-            print "App %s Not Found" % self.param
+            self.logger("App %s Not Found" % self.param)
             return {}
         for item in DATADIC:
             try:
                 self.data[item] = res[u'results'][0][DATADIC[item]]
             except:
-                print "On App %s, Item '%s' not found" % (self.param,item)
+                self.logger("On App %s, Item '%s' not found" % (self.param,item))
 
 
         #ADDITIONAL DATA
@@ -110,7 +108,8 @@ class AppInfo:
         try:
             js = json.loads(out)
         except:
-            print "Additional Data Couldn't be retrieved on %s" % self.param
+            self.logger("Exception Found"+sys.exc_info()[1])
+            self.logger("Additional Data Couldn't be retrieved on %s" % self.param)
             return self.data
         try:
             self.data[u'siz']=self.getfilesize(res[u'results'][0][u'fileSizeBytes'])
@@ -146,7 +145,7 @@ class AppInfo:
 
             self.data[u'cop']=[]
         except:
-            print "Error in %s : %s" % (self.param,sys.exc_info()[1])
+            self.logger("Error in %s : %s" % (self.param,sys.exc_info()[1]))
         #THIS PART IS WRITTEN LIKE Alireza's Importer
 
         iphone = len(self.data[u'scr'])>0
