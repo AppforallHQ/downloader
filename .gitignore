@@ -1,6 +1,7 @@
 .virtualenv/
 core/local_celeryconfig.py
 core/local_settings.py
+data/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
