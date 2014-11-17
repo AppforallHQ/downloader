@@ -1,14 +1,14 @@
 import logging,time,subprocess
 from bson.objectid import ObjectId
 from os import listdir,environ,makedirs,path
-import sys
+import sys,time
 from pymongo import Connection
 
 
 class Downloader:
     def __init__(self,db=None):
         self.db = db
-        logging.basicConfig(filename='downloader.log',level=logging.INFO)
+        logging.basicConfig(filename=("log/downloader-%s.log" % int(time.time())),level=logging.INFO)
         self.logger = logging.getLogger(__name__)
 
 
