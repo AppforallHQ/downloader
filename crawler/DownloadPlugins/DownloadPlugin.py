@@ -12,6 +12,7 @@ class DownloadPlugin:
                 os.remove(os.path.join(root, name))
             for name in dirs:
                 os.rmdir(os.path.join(root, name))
+        os.rmdir(top)
 
     def Download(self,_id,link,data,managers,config):
         if not 'dldir' in config:
