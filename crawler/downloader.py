@@ -8,7 +8,7 @@ from pymongo import Connection
 class Downloader:
     def __init__(self,db=None):
         self.db = db
-        logging.basicConfig(level=logging.INFO)
+        logging.basicConfig(filename='downloader.log',level=logging.INFO)
         self.logger = logging.getLogger(__name__)
 
 
