@@ -6,6 +6,13 @@ class DownloadPlugin:
     def canDownload(self,link):
         return False
 
+    def rmdir(self,top):
+        for root, dirs, files in os.walk(top, topdown=False):
+            for name in files:
+                os.remove(os.path.join(root, name))
+            for name in dirs:
+                os.rmdir(os.path.join(root, name))
+
     def Download(self,_id,link,data,managers,config):
         if not 'dldir' in config:
             return False
@@ -17,7 +24,7 @@ class DownloadPlugin:
             os.makedirs(wd)
         else:
             self.logger.warning("%s Already Existed! Deleted To Recreate it!" % wd)
-            os.rmdir(wd)
+            self.rmdir(wd)
             os.makedirs(wd)
         dl = self.HandleDownload(link,wd,managers[config['downloadmanager']]())
         if dl is None:
