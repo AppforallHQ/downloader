@@ -37,7 +37,7 @@ class Downloader:
 
         self.config = {
             'dldir' : environ.get("DOWNLOAD_DIRECTORY","./tmp/"),
-            'impdir' : environ.get("IMPORTER_DIRECTORY","../importer/"),
+            'impdir' : environ.get("IMPORTER_DIRECTORY","./apprepo/"),
             'downloadmanager' : environ.get("DOWNLOAD_MANAGER","Axel")
         }
         if not path.exists(path.abspath(self.config['dldir'])):
@@ -95,12 +95,12 @@ if __name__ == "__main__" and "--download" in sys.argv:
         link = sys.argv[sys.argv.index("--download")+1]
         data = sys.argv[sys.argv.index("--download")+2]
         Downloader().downloadItem({
-            "_id" : ObjectId(),
+            "_id" : str(ObjectId()),
             "links" : [(link,True)],
             "data" : data
         })
     except Exception as e:
-        print("Invalid Data %s" % e)
+        print("Invalid Data : %s" % e)
         print("Usage : downloader --download link jsondata")
 
 if __name__ == "__main__" and "--startdownloader" in sys.argv:

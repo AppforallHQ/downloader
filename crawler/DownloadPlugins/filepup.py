@@ -1,5 +1,5 @@
 from .DownloadPlugin import DownloadPlugin
-import logging,os,requests,re
+import logging,os,requests,re,json
 
 class FilePup(DownloadPlugin):
     def __init__(self):
@@ -7,6 +7,7 @@ class FilePup(DownloadPlugin):
         self.logger = logging.getLogger(__name__)
         self.username = os.environ.get("FILEPUP_USER","PROJECT")
         self.password = os.environ.get("FILEPUP_PASS","")
+        self.apikey = os.environ.get("FILEPUP_API","M1RB7pwYMpSS1b3Y36qGXVKQgYmERatt")
         self.cookies = {}
 
     def canDownload(self,link):
@@ -32,7 +33,21 @@ class FilePup(DownloadPlugin):
 
     def HandleDownload(self,link,wd,dlmanager):
 
-        #[m.groupdict() for m in re.finditer(r"(http://)?(www\.)?filepup\.net/(files/)?(get/)?(?P<file_id>[^\./]+)(\.html)?(/)?(.*)?","www.filepup.net/files/4XvuVva1391742440/LDOCEPlus-v5.7os43-bwel.ipa.html")]
+        rtext_out = None
+        try:
+            file_id = [m.groupdict() for m in re.finditer(r"(http://)?(www\.)?filepup\.net/(files/)?(get/)?(?P<file_id>[^\./]+)(\.html)?(/)?(.*)?",link)][0]["file_id"]
+            api_url = "http://www.filepup.net/api/info.php?api_key=%s&file_id=%s" % (self.apikey,file_id)
+            r = requests.get(api_url)
+            rtext_out=r.text
+            file_name = [m.groupdict() for m in re.finditer(r"\[file_name\][\s]?=>[\s]?(?P<file_name>[^\[]+)",r.text)][0]["file_name"]
+            if file_name:
+                self.logger.info("FileName : %s" % file_name)
+        except Exception as e:
+            self.logger.error("Couldn't Download Link %s" % link)
+            if rtext_out:
+                self.logger.error("Filepup API Output : %s" % rtext_out)
+            self.logger.error("Error : %s" % e)
+            return None
 
 
         if self.login(dlmanager):
@@ -51,8 +66,10 @@ class FilePup(DownloadPlugin):
             dlmanager.PostData("task","download")
         except:
             return None
-
-        if dlmanager.StartDownload(wd) == 0:
-            return os.listdir(wd)[0]
-        else:
+        try:
+            if dlmanager.StartDownload(wd) == 0:
+                return os.listdir(wd)[0]
+            else:
+                return None
+        except:
             return None
