@@ -2,7 +2,7 @@ from .DownloadManager import DownloadManager
 from subprocess import Popen, PIPE
 from time import sleep
 from fcntl import fcntl, F_GETFL, F_SETFL
-from os import O_NONBLOCK, read
+from os import O_NONBLOCK, read, path, remove
 import logging,re
 
 
@@ -51,10 +51,13 @@ class Axel(DownloadManager):
         sleep(0.1)
         outp,lastdl = "",""
 
+        axelLogger = open(path.join(wd,"Download.log"),"w")
         self.logger.info("Download Started!")
         while True:
             try:
                 data = read(p.stdout.fileno(), 4096).decode("utf-8")
+                axelLogger.write(data)
+                axelLogger.flush()
                 outp += data
                 lst = re.findall("(\\d+\\%)",outp)
                 if len(lst) > 0 and lst[-1]!=lastdl:
@@ -65,11 +68,13 @@ class Axel(DownloadManager):
             if p.poll() is not None and p.poll() != -1:
                 self.logger.info("Axel++ Exited With Code %s" % p.poll())
                 break
+        axelLogger.close()
         outp += p.communicate()[0].decode("utf-8")
         lst = re.findall("(\\d+\\%)",outp)
         if len(lst) > 0 and lst[-1]!=lastdl:
             self.logger.info("Downloaded %s" % lst[-1])
         if outp.find("Downloaded") != -1:
+            remove(path.join(wd,"Download.log"))
             self.logger.info("Download Finished Successfully")
             return 0
         else:
