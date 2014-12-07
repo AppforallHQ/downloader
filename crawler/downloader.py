@@ -58,7 +58,7 @@ class Downloader:
     def downloadOne(self):
         item = self.db.download.find_one({"canDownload":1})
         if not item:
-            self.logger("No Download Request.. Sleeping For Two Minutes")
+            self.logger.info("No Download Request.. Sleeping For Two Minutes")
             time.sleep(120)
             return
 
@@ -89,6 +89,11 @@ class Downloader:
                 return
             self.downloadOne()
 
+
+if __name__ == "__main__" and "--restart" in sys.argv:
+    conn = Connection(environ.get("MONGO_URI", "mongodb://localhost/requests"))
+    db = conn.requests
+    db.download.update({"canDownload":1})
 
 if __name__ == "__main__" and "--download" in sys.argv:
     try:
