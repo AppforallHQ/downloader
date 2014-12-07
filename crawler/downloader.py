@@ -52,7 +52,9 @@ class Downloader:
                 if not flag and self.downloaders[plugin].canDownload(link[0]):
                     if not link[1]:
                         self.logger.warning("Going To Download Unverified Link %s" % link[0])
-                    flag = flag or self.downloaders[plugin].Download(item['_id'],link[0],data = item['data'],managers=self.managers,config =self.config)
+                    from urllib import parse
+                    final = parse.urlparse(link[0]).geturl()
+                    flag = flag or self.downloaders[plugin].Download(item['_id'],final,data = item['data'],managers=self.managers,config =self.config)
         return flag
 
     def downloadOne(self):
@@ -93,7 +95,7 @@ class Downloader:
 if __name__ == "__main__" and "--restart" in sys.argv:
     conn = Connection(environ.get("MONGO_URI", "mongodb://localhost/requests"))
     db = conn.requests
-    db.download.update({"canDownload":1})
+    db.download.update({},{"canDownload":1})
 
 if __name__ == "__main__" and "--download" in sys.argv:
     try:
