@@ -53,7 +53,7 @@ class Downloader:
                     if not link[1]:
                         self.logger.warning("Going To Download Unverified Link %s" % link[0])
                     from urllib import parse
-                    final = item[0]
+                    final = link[0]
                     if not parse.urlparse(link[0]).scheme:
                         final = "http://"+final
                     flag = flag or self.downloaders[plugin].Download(item['_id'],final,data = item['data'],managers=self.managers,config =self.config)
