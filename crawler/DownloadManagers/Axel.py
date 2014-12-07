@@ -41,10 +41,13 @@ class Axel(DownloadManager):
         if len(postdata) > 0:
             postdata=postdata[:-1]
 
-        self.SetParameter(["-c",cookies])
-        self.SetParameter(["-p",postdata])
+        if len(cookies)>0:
+            self.SetParameter(["-c",cookies])
+        if len(postdata)>0:
+            self.SetParameter(["-p",postdata])
         #self.SetParameter(["-n","14"])
         self.procparam.append(self.link)
+        print(self.procparam)
         p = Popen(self.procparam,stdin = PIPE, stdout = PIPE, stderr = PIPE, shell = False,cwd= wd)
         flags = fcntl(p.stdout, F_GETFL)
         fcntl(p.stdout, F_SETFL, flags | O_NONBLOCK)
