@@ -11,7 +11,7 @@ class FilePup(DownloadPlugin):
         self.cookies = {}
 
     def canDownload(self,link):
-        return link.find("filepup.net") != -1
+        return link.find("filepup.net") != -1 and link.find("sp3.filepup.net") == -1
 
 
     def login(self,dlmanager):

@@ -56,7 +56,10 @@ class Downloader:
                     final = link[0]
                     if not parse.urlparse(link[0]).scheme:
                         final = "http://"+final
-                    flag = flag or self.downloaders[plugin].Download(item['_id'],final,data = item['data'],managers=self.managers,config =self.config)
+                    try:
+                        flag = flag or self.downloaders[plugin].Download(item['_id'],final,data = item['data'],managers=self.managers,config =self.config)
+                    except Exception as ex:
+                        self.logger.error("Error Occurred Downloading %s : %s" % (final,ex))
         return flag
 
     def downloadOne(self):
