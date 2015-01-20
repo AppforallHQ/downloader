@@ -2,6 +2,7 @@ Pillow==2.6.1
 PyYAML==3.11
 argh==0.26.0
 ecdsa==0.11
+graypy==0.2.11
 httplib2==0.9
 paramiko==1.15.1
 pathtools==0.1.2
@@ -11,6 +12,3 @@ pymongo==2.7.2
 python-dateutil==2.2
 six==1.8.0
 watchdog==0.8.2
-urllib3==1.7.1
-requests==2.2.1
-beautifulsoup4==4.3.2

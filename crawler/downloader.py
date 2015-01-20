@@ -2,6 +2,7 @@ import logging,time,subprocess
 from bson.objectid import ObjectId
 from os import listdir,environ,makedirs,path
 import sys,time
+import graypy
 from pymongo import Connection
 
 
@@ -10,7 +11,8 @@ class Downloader:
         self.db = db
         logging.basicConfig(filename=("log/downloader-%s.log" % int(time.time())),level=logging.INFO)
         self.logger = logging.getLogger(__name__)
-
+        handler = graypy.GELFHandler(environ.get('LOGSTASH_GELF_HOST'), int(environ.get('LOGSTASH_GELF_PORT')))
+        self.logger.addHandler(handler)
 
         ########DOWNLOAD MANAGERS
         modo = [name.split(".py")[0] for name in listdir("DownloadManagers") if name.endswith(".py")]
