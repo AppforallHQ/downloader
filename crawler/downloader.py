@@ -5,13 +5,14 @@ import sys,time
 import graypy
 from pymongo import Connection
 
+import settings
 
 class Downloader:
     def __init__(self,db=None):
         self.db = db
         logging.basicConfig(filename=("log/downloader-%s.log" % int(time.time())),level=logging.INFO)
         self.logger = logging.getLogger(__name__)
-        handler = graypy.GELFHandler(environ.get('LOGSTASH_GELF_HOST'), int(environ.get('LOGSTASH_GELF_PORT')))
+        handler = graypy.GELFHandler(settings.LOGSTASH_GELF_HOST, settings.LOGSTASH_GELF_PORT)
         self.logger.addHandler(handler)
 
         ########DOWNLOAD MANAGERS
@@ -38,9 +39,9 @@ class Downloader:
             self.downloaders[cls.__name__] = cls()
 
         self.config = {
-            'dldir' : environ.get("DOWNLOAD_DIRECTORY","./tmp/"),
-            'impdir' : environ.get("IMPORTER_DIRECTORY","./apprepo/"),
-            'downloadmanager' : environ.get("DOWNLOAD_MANAGER","Axel")
+            'dldir' : settings.DOWNLOAD_DIRECTORY,
+            'impdir' : settings.IMPORTER_DIRECTORY,
+            'downloadmanager' : settings.DOWNLOAD_MANAGER
         }
         if not path.exists(path.abspath(self.config['dldir'])):
             makedirs(path.abspath(self.config['dldir']))
@@ -100,7 +101,7 @@ class Downloader:
 
 
 if __name__ == "__main__" and "--restart" in sys.argv:
-    conn = Connection(environ.get("MONGO_URI", "mongodb://localhost/requests"))
+    conn = Connection(settings.MONGO_URI)
     db = conn.requests
     db.download.update({},{"canDownload":1})
 
@@ -118,6 +119,6 @@ if __name__ == "__main__" and "--download" in sys.argv:
         print("Usage : downloader --download link jsondata")
 
 if __name__ == "__main__" and "--startdownloader" in sys.argv:
-    conn = Connection(environ.get("MONGO_URI", "mongodb://localhost/requests"))
+    conn = Connection(settings.MONGO_URI)
     db = conn.requests
     Downloader(db=db).start()

@@ -1,13 +1,15 @@
 from .DownloadPlugin import DownloadPlugin
 import logging,os,requests,re,json
 
+import settings
+
 class FilePup(DownloadPlugin):
     def __init__(self):
         super(DownloadPlugin,self).__init__()
         self.logger = logging.getLogger(__name__)
-        self.username = os.environ.get("FILEPUP_USER","PROJECT")
-        self.password = os.environ.get("FILEPUP_PASS","")
-        self.apikey = os.environ.get("FILEPUP_API","M1RB7pwYMpSS1b3Y36qGXVKQgYmERatt")
+        self.username = settings.FILEPUP_USER
+        self.password = settings.FILEPUP_PASS
+        self.apikey = settings.FILEPUP_API
         self.cookies = {}
 
     def canDownload(self,link):
