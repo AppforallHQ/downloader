@@ -6,8 +6,8 @@ class TurboBit(DownloadPlugin):
     def __init__(self):
         super(DownloadPlugin,self).__init__()
         self.logger = logging.getLogger(__name__)
-        self.username = os.environ.get("TURBOBIT_USER","admin@PROJECT.ir")
-        self.password = os.environ.get("TURBOBIT_PASS","Onlytime2380")
+        self.username = settings.TURBOBIT_USER
+        self.password = settings.TURBOBIT_PASS
         self.cookies = {}
         self.time = 0
 

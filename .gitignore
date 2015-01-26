@@ -4,6 +4,8 @@ core/local_settings.py
 data/
 *~
 
+requests/local_settings.py
+
 *.sqlite
 
 # Byte-compiled / optimized / DLL files
