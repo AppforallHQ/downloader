@@ -69,6 +69,7 @@ class FilePup(DownloadPlugin):
         except:
             return None
         try:
+            dlmanager.SetParameter(['-s','524288'])
             if dlmanager.StartDownload(wd) == 0:
                 return os.listdir(wd)[0]
             else:
