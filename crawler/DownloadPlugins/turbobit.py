@@ -1,6 +1,7 @@
 from .DownloadPlugin import DownloadPlugin
 import logging,os,requests,re,json,time
 from bs4 import BeautifulSoup as Soup
+import settings
 
 class TurboBit(DownloadPlugin):
     def __init__(self):
