@@ -49,6 +49,8 @@ class Downloader:
 
     def downloadItem(self,item):
         flag = False
+        if not 'links' in item:
+            return flag
         for link in item['links']:
             self.logger.info("Trying To Download %s..." % link[0])
             for plugin in self.downloaders:
@@ -74,7 +76,8 @@ class Downloader:
 
         flag = self.downloadItem(item)
         if not flag:
-            self.logger.warning("Couldn't Download App with DB ID %s" % item['applinkid'])
+            if 'applinkid' in item:
+                self.logger.warning("Couldn't Download App with DB ID %s" % item['applinkid'])
             self.db.download.update({"_id":ObjectId(item['_id'])},{"$set":{"canDownload":0}})
         else:
             self.logger.info("Download Successful. Removing %s From Download Queue" % item['_id'])

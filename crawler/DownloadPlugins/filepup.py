@@ -10,6 +10,7 @@ class FilePup(DownloadPlugin):
         self.username = settings.FILEPUP_USER
         self.password = settings.FILEPUP_PASS
         self.apikey = settings.FILEPUP_API
+        self.user_agent = "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
         self.cookies = {}
 
     def canDownload(self,link):
@@ -24,7 +25,7 @@ class FilePup(DownloadPlugin):
                 "pass" : self.password,
                 "task" : "dologin",
                 "return" : "./members/myfiles.php"
-            },allow_redirects=False)
+            },allow_redirects=False,headers={"User-Agent":self.user_agent})
             if r.status_code == 302:
                 dlmanager.SetCookie("PHPSESSID",r.cookies['PHPSESSID'])
                 self.cookies["PHPSESSID"] = r.cookies['PHPSESSID']
@@ -39,7 +40,7 @@ class FilePup(DownloadPlugin):
         try:
             file_id = [m.groupdict() for m in re.finditer(r"(http://)?(www\.)?filepup\.net/(files/)?(get/)?(?P<file_id>[^\./]+)(\.html)?(/)?(.*)?",link)][0]["file_id"]
             api_url = "http://www.filepup.net/api/info.php?api_key=%s&file_id=%s" % (self.apikey,file_id)
-            r = requests.get(api_url)
+            r = requests.get(api_url,headers={"User-Agent":self.user_agent})
             rtext_out=r.text
             file_name = [m.groupdict() for m in re.finditer(r"\[file_name\][\s]?=>[\s]?(?P<file_name>[^\[]+)",r.text)][0]["file_name"]
             if file_name:
@@ -56,7 +57,7 @@ class FilePup(DownloadPlugin):
             self.logger.info("Filepup Login Successful")
         else:
             return None
-        r = requests.get(link,cookies=self.cookies)
+        r = requests.get(link,cookies=self.cookies,headers={"User-Agent":self.user_agent})
         if r.status_code != 200:
             return None
         mt = re.findall("window\\.location(\\s*)=(\\s*)\"([^\"]*)\"",r.text)
