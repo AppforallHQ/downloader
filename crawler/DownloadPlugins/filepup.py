@@ -1,6 +1,6 @@
 from .DownloadPlugin import DownloadPlugin
 import logging,os,requests,re,json
-
+import time
 import settings
 
 class FilePup(DownloadPlugin):
@@ -40,6 +40,7 @@ class FilePup(DownloadPlugin):
         try:
             file_id = [m.groupdict() for m in re.finditer(r"(http://)?(www\.)?filepup\.net/(files/)?(get/)?(?P<file_id>[^\./]+)(\.html)?(/)?(.*)?",link)][0]["file_id"]
             api_url = "http://www.filepup.net/api/info.php?api_key=%s&file_id=%s" % (self.apikey,file_id)
+            time.sleep(5)
             r = requests.get(api_url,headers={"User-Agent":self.user_agent})
             rtext_out=r.text
             file_name = [m.groupdict() for m in re.finditer(r"\[file_name\][\s]?=>[\s]?(?P<file_name>[^\[]+)",r.text)][0]["file_name"]
@@ -52,11 +53,12 @@ class FilePup(DownloadPlugin):
             self.logger.error("Error : %s" % e)
             return None
 
-
+        time.sleep(5)
         if self.login(dlmanager):
             self.logger.info("Filepup Login Successful")
         else:
             return None
+        time.sleep(5)
         r = requests.get(link,cookies=self.cookies,headers={"User-Agent":self.user_agent})
         if r.status_code != 200:
             return None
@@ -71,6 +73,7 @@ class FilePup(DownloadPlugin):
             return None
         try:
             dlmanager.SetParameter(['-s','524288'])
+            time.sleep(5)
             if dlmanager.StartDownload(wd) == 0:
                 return os.listdir(wd)[0]
             else:
