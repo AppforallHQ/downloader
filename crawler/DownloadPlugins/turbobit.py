@@ -53,6 +53,18 @@ class TurboBit(DownloadPlugin):
             url = dl.headers["location"]
             dl = requests.head(url,allow_redirects=False,cookies=self.cookies)
             url = dl.headers["location"]
+
+            filename = None
+            try:
+                filereq = requests.head(url,allow_redirects=False,cookies=self.cookies)
+                hdr = filereq.headers.get("content-disposition")
+                filename = re.findall(r"filename=(\")?([^\"]+)(\")?",hdr)[0][1]
+                if filename[0] == '"' and filename[-1] == '"':
+                    filename = filename[1:-1]
+            except:
+                pass
+            if filename:
+                dlmanager.SetParameter(["-o",filename])
             for item in dl.cookies.items():
                 dlmanager.SetCookie(item[0],item[1])
             dlmanager.SetLink(url)
