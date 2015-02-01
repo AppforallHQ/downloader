@@ -35,7 +35,7 @@ class FilePup(DownloadPlugin):
         return False
 
     def HandleDownload(self,link,wd,dlmanager):
-
+	time.sleep(60)
         rtext_out = None
         try:
             file_id = [m.groupdict() for m in re.finditer(r"(http://)?(www\.)?filepup\.net/(files/)?(get/)?(?P<file_id>[^\./]+)(\.html)?(/)?(.*)?",link)][0]["file_id"]
