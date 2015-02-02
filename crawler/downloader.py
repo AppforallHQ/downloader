@@ -8,7 +8,7 @@ from pymongo import Connection
 analytics.write_key = ''
 
 analytics.identify('downloader', traits={
-	'email': 'backend+todo.everyone@PROJECT..com',
+	'email': '+downloader@PROJECT..com',
 	'firstName': 'downloader'
 })
 
@@ -104,7 +104,7 @@ class Downloader:
             self.downloadOne()
 
 def send_download_status(app, status, extra=None):
-	analytics.track('downloader', '%s download_status' % (app), {
+	analytics.track('downloader', 'download_status', {
 		'title': app,
 		'message': status,
 		'extra': extra,
