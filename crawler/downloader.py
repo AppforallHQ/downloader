@@ -9,7 +9,6 @@ analytics.write_key = ''
 
 analytics.identify('downloader', traits={
 	'email': '+downloader@PROJECT..com',
-	'firstName': 'downloader'
 })
 
 class Downloader:
@@ -126,6 +125,8 @@ if __name__ == "__main__" and "--download" in sys.argv:
         })
         
         send_download_status(link, downloader)
+        analytics.flush()
+
     except Exception as e:
         print("Invalid Data : %s" % e)
         print("Usage : downloader --download link jsondata")
