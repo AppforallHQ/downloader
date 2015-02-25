@@ -1,3 +1,4 @@
+import analytics
 import logging,time,subprocess
 from bson.objectid import ObjectId
 from os import listdir,environ,makedirs,path
@@ -5,7 +6,15 @@ import sys,time
 import graypy
 from pymongo import Connection
 
+
 import settings
+
+analytics.write_key = ''
+
+analytics.identify('downloader', traits={
+	'email': '+downloader@PROJECT..com',
+	'firstName': 'downloader'
+})
 
 class Downloader:
     def __init__(self,db=None):
@@ -102,6 +111,12 @@ class Downloader:
                 return
             self.downloadOne()
 
+def send_download_status(app, status, extra=None):
+	analytics.track('downloader', 'download_status', {
+		'title': app,
+		'message': "downloaded" if status else "failed",
+		'extra': extra,
+	})
 
 if __name__ == "__main__" and "--restart" in sys.argv:
     conn = Connection(settings.MONGO_URI)
@@ -112,11 +127,13 @@ if __name__ == "__main__" and "--download" in sys.argv:
     try:
         link = sys.argv[sys.argv.index("--download")+1]
         data = sys.argv[sys.argv.index("--download")+2]
-        Downloader().downloadItem({
+        downloader = Downloader().downloadItem({
             "_id" : str(ObjectId()),
             "links" : [(link,True)],
             "data" : data
         })
+        
+        send_download_status(link, downloader)
     except Exception as e:
         print("Invalid Data : %s" % e)
         print("Usage : downloader --download link jsondata")

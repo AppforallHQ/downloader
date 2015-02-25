@@ -31,7 +31,6 @@ class TurboBit(DownloadPlugin):
             if r.status_code == 302:
                 self.cookies["sid"] = r.cookies['sid']
                 self.cookies["user_isloggedin"] = r.cookies['user_isloggedin']
-                self.cookies["kohanasession"] = r.cookies['kohanasession']
                 self.time = time.time()+20*3600
                 return True
         except Exception as e:
