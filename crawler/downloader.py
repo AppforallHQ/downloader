@@ -13,8 +13,15 @@ analytics.write_key = ''
 
 analytics.identify('downloader', traits={
 	'email': '+downloader@PROJECT..com',
-	'firstName': 'downloader'
 })
+
+def send_download_status(app, status, extra=None):
+	analytics.track('downloader', 'download_status', {
+		'title': app,
+		'message': "downloaded" if status else "failed",
+		'extra': extra,
+	})
+
 
 class Downloader:
     def __init__(self,db=None):
@@ -77,13 +84,18 @@ class Downloader:
         return flag
 
     def downloadOne(self):
-        item = self.db.download.find_one({"canDownload":1})
+        item = self.db.download.find_one({"$query":{"canDownload":1},"$orderby":{"starred":-1}})
         if not item:
             self.logger.info("No Download Request.. Sleeping For Two Minutes")
             time.sleep(120)
             return
 
         flag = self.downloadItem(item)
+        if 'report' in item and item['report']==True:
+            try:
+                send_download_status(item['links'][0][0],flag)
+            except:
+                self.logger.error("Couldn't Report APP %s" % item['links'])
         if not flag:
             if 'applinkid' in item:
                 self.logger.warning("Couldn't Download App with DB ID %s" % item['applinkid'])
@@ -111,12 +123,7 @@ class Downloader:
                 return
             self.downloadOne()
 
-def send_download_status(app, status, extra=None):
-	analytics.track('downloader', 'download_status', {
-		'title': app,
-		'message': "downloaded" if status else "failed",
-		'extra': extra,
-	})
+
 
 if __name__ == "__main__" and "--restart" in sys.argv:
     conn = Connection(settings.MONGO_URI)
@@ -134,6 +141,8 @@ if __name__ == "__main__" and "--download" in sys.argv:
         })
         
         send_download_status(link, downloader)
+        analytics.flush()
+
     except Exception as e:
         print("Invalid Data : %s" % e)
         print("Usage : downloader --download link jsondata")
