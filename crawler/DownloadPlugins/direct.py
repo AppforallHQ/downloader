@@ -17,8 +17,8 @@ class DirectLink(DownloadPlugin):
             return False
         if link.find("turbobit.net") != -1:
             return False
-        r = requests.head(link,headers={'User-Agent':self.user_agent})
         try:
+            r = requests.head(link,headers={'User-Agent':self.user_agent})
             flag = (r.headers['content-type'] == "application/octet-stream")
         except:
             flag = False
