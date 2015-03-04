@@ -20,9 +20,11 @@ class DirectLink(DownloadPlugin):
         try:
             r = requests.head(link,headers={'User-Agent':self.user_agent})
             flag = (r.headers['content-type'] == "application/octet-stream")
+            if not flag:
+                flag = int(r.headers['content-length']) >= 1024*1024
         except:
             flag = False
-        print(flag)
+        
         time.sleep(1)
         return flag
 
