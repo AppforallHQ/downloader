@@ -4,7 +4,7 @@ from bson.objectid import ObjectId
 from os import listdir,environ,makedirs,path
 import sys,time
 import graypy
-from pymongo import Connection
+from pymongo import MongoClient
 
 
 import settings
@@ -126,7 +126,7 @@ class Downloader:
 
 
 if __name__ == "__main__" and "--restart" in sys.argv:
-    conn = Connection(settings.MONGO_URI)
+    conn = MongoClient(settings.MONGO_URI)
     db = conn.requests
     db.download.update({},{"canDownload":1})
 
@@ -148,6 +148,6 @@ if __name__ == "__main__" and "--download" in sys.argv:
         print("Usage : downloader --download link jsondata")
 
 if __name__ == "__main__" and "--startdownloader" in sys.argv:
-    conn = Connection(settings.MONGO_URI)
+    conn = MongoClient(settings.MONGO_URI)
     db = conn.requests
     Downloader(db=db).start()
