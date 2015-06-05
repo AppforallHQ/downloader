@@ -116,9 +116,9 @@ class Downloader:
         self.logger.info("Downloader Thread Started")
 
         while True:
-            availableDiskSpace = self.getDriveStatistics(self.config['dldir'])
-            if int(availableDiskSpace) < 10*1000*1000:
-                self.logger.error("Insufficient Disk Space %s GB!" % (availableDiskSpace/1024./1024))
+            availableDiskSpace = float(self.getDriveStatistics(self.config['dldir']))
+            if availableDiskSpace < 10*1000*1000:
+                self.logger.error("Insufficient Disk Space %f GB!" % (availableDiskSpace/1024./1024))
                 #Send Analytics Mail
                 return
             self.downloadOne()
