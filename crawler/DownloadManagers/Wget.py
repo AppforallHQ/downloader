@@ -29,12 +29,12 @@ class Wget(DownloadManager):
         self.link = link
 
     def StartDownload(self,wd):
-        cookies = "Cookie: "
+        cookies = ""
         postdata = ""
         for cookie in self.cookies:
             cookies += cookie+"="+self.cookies[cookie]+"&"
         if len(cookies) > 0:
-            cookies=cookies[:-1]
+            cookies="Cookie: "+cookies[:-1]
         for pd in self.postdata:
             postdata += pd+"="+self.postdata[pd]+"&"
         if len(postdata) > 0:
