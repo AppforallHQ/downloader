@@ -32,18 +32,19 @@ class Wget(DownloadManager):
         cookies = ""
         postdata = ""
         for cookie in self.cookies:
-            cookies += cookie+"="+self.cookies[cookie]+"&"
+            cookies += cookie+"="+self.cookies[cookie]+";"
         if len(cookies) > 0:
             cookies="Cookie: "+cookies[:-1]
         for pd in self.postdata:
             postdata += pd+"="+self.postdata[pd]+"&"
+
         if len(postdata) > 0:
             postdata=postdata[:-1]
-
         if len(cookies)>0:
-            self.SetParameter(["--no-cookies --header",cookies])
+            self.SetParameter(["--no-cookies","--header",cookies])
         if len(postdata)>0:
             self.SetParameter(["--post-data",postdata])
+
         self.SetParameter(["-o", "Download.log"])
         self.procparam.append(self.link)
         print(self.procparam)
