@@ -3,6 +3,7 @@ from subprocess import Popen, PIPE
 from time import sleep
 from fcntl import fcntl, F_GETFL, F_SETFL
 from os import O_NONBLOCK, read, path, remove
+from urllib import parse
 import logging,re
 
 
@@ -32,7 +33,7 @@ class Wget(DownloadManager):
         cookies = ""
         postdata = ""
         for cookie in self.cookies:
-            cookies += cookie+"="+self.cookies[cookie]+";"
+            cookies += cookie+"="+parse.quote(self.cookies[cookie])+";"
         if len(cookies) > 0:
             cookies="Cookie: "+cookies[:-1]
         for pd in self.postdata:
