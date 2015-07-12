@@ -29,6 +29,8 @@ class TurboBit(DownloadPlugin):
                 dlmanager.SetParameter(["-o", filename])
             if post_params:
                 dlmanager.SetParameter(["--post-data", post_params])
+            for item in req.cookies.items():
+                dlmanager.SetCookie(item[0],item[1])
             dlmanager.SetLink(link)
 
             if dlmanager.StartDownload(wd) == 0:
