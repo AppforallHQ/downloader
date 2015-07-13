@@ -14,6 +14,7 @@ class Wget(DownloadManager):
         self.cookies={}
         self.postdata={}
         self.link = ""
+        self.limit_speed = False
         self.logger = logging.getLogger(__name__)
 
     def SetParameter(self,lst):
@@ -45,6 +46,8 @@ class Wget(DownloadManager):
             self.SetParameter(["--no-cookies","--header",cookies])
         if len(postdata)>0:
             self.SetParameter(["--post-data",postdata])
+        if self.limit_speed:
+            self.SetParameter(['--limit-rate','524288'])
 
         self.SetParameter(["-o", "Download.log"])
         self.procparam.append(self.link)
