@@ -74,7 +74,7 @@ class FilePup(DownloadPlugin):
         except:
             return None
         try:
-            dlmanager.SetParameter(['-s','524288'])
+            dlmanager.limit_speed = True
             time.sleep(5)
             if dlmanager.StartDownload(wd) == 0:
                 return os.listdir(wd)[0]
