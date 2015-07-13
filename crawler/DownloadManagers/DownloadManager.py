@@ -4,3 +4,4 @@ class DownloadManager:
     def SetParameter(self,param): pass
     def PostData(self,key,value): pass
     def SetCookie(self,key,value): pass
+    def SetSpeedLimit(self,speed): pass
