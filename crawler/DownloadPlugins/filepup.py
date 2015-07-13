@@ -30,6 +30,8 @@ class FilePup(DownloadPlugin):
                 dlmanager.SetCookie("PHPSESSID",r.cookies['PHPSESSID'])
                 self.cookies["PHPSESSID"] = r.cookies['PHPSESSID']
                 return True
+            else:
+                self.logger.error("Error in Login : %s" % e)
         except Exception as e:
             self.logger.error("Error in Login : %s" % e)
         return False
