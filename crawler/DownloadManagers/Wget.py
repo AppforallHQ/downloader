@@ -65,7 +65,7 @@ class Wget(DownloadManager):
         flags = fcntl(p.stdout, F_GETFL)
         fcntl(p.stdout, F_SETFL, flags | O_NONBLOCK)
         sleep(0.1)
-        outp,lastdl = "",""
+        outp,lastdl = "","0%"
         wgetLogger = open(path.join(wd, "Download.log"),"r")
         self.logger.info("Download Started!")
         while True:
@@ -79,16 +79,28 @@ class Wget(DownloadManager):
             except OSError as e:
                 sleep(.1)
             if p.poll() is not None and p.poll() != -1:
+                # fetch wget log for last time
+                # and catch 100%
+                data = wgetLogger.read()
+                outp += data
+                lst = re.findall("(\\d+\\%)",outp)
+                if len(lst) > 0 and lst[-1]!=lastdl:
+                    self.logger.info("Downloaded %s" % lst[-1])
+                    lastdl=lst[-1]
                 self.logger.info("Wget Exited With Code %s" % p.poll())
                 break
         wgetLogger.close()
         outp += p.communicate()[0].decode("utf-8")
         lst = re.findall("(\\d+\\%)",outp)
+        lastline = outp.strip().split('\n')[-1]
+        if lastline.find(" saved ") != -1:
+            lastdl='100%'
         if len(lst) > 0 and lst[-1]!=lastdl:
             self.logger.info("Downloaded %s" % lst[-1])
-        if int(lastdl[:-1]) == 100 and outp.find("saved") != -1:
+        if lastdl[:-1] and int(lastdl[:-1]) == 100 and outp.find("saved") != -1:
             remove(path.join(wd,"Download.log"))
             self.logger.info("Download Finished Successfully")
+            self.logger.info("Downloaded 100%")
             return 0
         else:
             self.logger.error("Error Download File %s" % self.link)
