@@ -3,7 +3,7 @@ import logging, os, requests
 from bs4 import BeautifulSoup as Soup
 import settings
 
-class TurboBit(DownloadPlugin):
+class FileShack(DownloadPlugin):
     def __init__(self):
         super(DownloadPlugin,self).__init__()
         self.logger = logging.getLogger(__name__)
@@ -16,7 +16,8 @@ class TurboBit(DownloadPlugin):
     def HandleDownload(self,link,wd,dlmanager):
         try:
             download_id = link.split("/")[-1]
-            post_params = "op=download2&id="+download_id
+            dlmanager.PostData('op', 'download2')
+            dlmanager.PostData('id', download_id)
             filename = None
             try:
                 req = requests.get(link, cookies=self.cookies)
@@ -25,10 +26,8 @@ class TurboBit(DownloadPlugin):
             except Exception as err:
                 self.logger.error("Error fetching file name : %s" % err)
                 pass
-            if filename:
-                dlmanager.SetParameter(["-o", filename])
-            if post_params:
-                dlmanager.SetParameter(["--post-data", post_params])
+            # if filename:
+                # dlmanager.SetFileName(filename)
             for item in req.cookies.items():
                 dlmanager.SetCookie(item[0],item[1])
             dlmanager.SetLink(link)
