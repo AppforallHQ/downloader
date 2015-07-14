@@ -14,6 +14,7 @@ class Wget(DownloadManager):
         self.cookies={}
         self.postdata={}
         self.link = ""
+        self.filename = ""
         self.logger = logging.getLogger(__name__)
 
     def SetParameter(self,lst):
@@ -32,6 +33,9 @@ class Wget(DownloadManager):
     def SetLink(self,link):
         self.link = link
 
+    def SetFileName(self,name):
+        self.filename = name
+
     def StartDownload(self,wd):
         cookies = ""
         postdata = ""
@@ -48,6 +52,11 @@ class Wget(DownloadManager):
             self.SetParameter(["--no-cookies","--header",cookies])
         if len(postdata)>0:
             self.SetParameter(["--post-data",postdata])
+
+        if self.filename:
+            self.SetParameter(['-O', self.filename])
+        else:
+            self.SetParameter(['--content-disposition'])
 
         self.SetParameter(["-o", "Download.log"])
         self.procparam.append(self.link)
