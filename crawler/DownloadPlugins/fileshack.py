@@ -18,16 +18,11 @@ class FileShack(DownloadPlugin):
             download_id = link.split("/")[-1]
             dlmanager.PostData('op', 'download2')
             dlmanager.PostData('id', download_id)
-            filename = None
             try:
-                req = requests.get(link, cookies=self.cookies)
-                soup = Soup(req.text)
-                filename = soup.find("span", {"class": "dfilename"}).text
+                req = requests.head(link, cookies=self.cookies)
             except Exception as err:
                 self.logger.error("Error fetching file name : %s" % err)
                 pass
-            # if filename:
-                # dlmanager.SetFileName(filename)
             for item in req.cookies.items():
                 dlmanager.SetCookie(item[0],item[1])
             dlmanager.SetLink(link)
