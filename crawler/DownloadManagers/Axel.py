@@ -28,6 +28,10 @@ class Axel(DownloadManager):
 
     def SetLink(self,link):
         self.link = link
+        
+    def SetSpeedLimit(self,speed):
+        self.SetParameter(['-s', str(speed)])    
+    
 
     def StartDownload(self,wd):
         cookies = ""

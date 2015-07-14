@@ -20,6 +20,9 @@ class Wget(DownloadManager):
         for param in lst:
             self.procparam.append(param)
 
+    def SetSpeedLimit(self,speed):
+        self.SetParameter(['--limit-rate', str(speed)])
+
     def SetCookie(self,key,value):
         self.cookies[key] = value
 

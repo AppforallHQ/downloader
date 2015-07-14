@@ -30,6 +30,8 @@ class FilePup(DownloadPlugin):
                 dlmanager.SetCookie("PHPSESSID",r.cookies['PHPSESSID'])
                 self.cookies["PHPSESSID"] = r.cookies['PHPSESSID']
                 return True
+            else:
+                self.logger.error("Error in Login : %s" % e)
         except Exception as e:
             self.logger.error("Error in Login : %s" % e)
         return False
@@ -72,7 +74,7 @@ class FilePup(DownloadPlugin):
         except:
             return None
         try:
-            dlmanager.SetParameter(['-s','524288'])
+            dlmanager.SetSpeedLimit(524288)
             time.sleep(5)
             if dlmanager.StartDownload(wd) == 0:
                 return os.listdir(wd)[0]
