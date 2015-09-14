@@ -85,9 +85,10 @@ class Downloader:
         return flag
 
     def downloadOne(self):
-        query = {"$query":{"canDownload":1},"$orderby":{"starred":-1}}
-        if self.impdir:
-            query["auto"] = 1
+        query = {"$query":{"canDownload":1,
+                           "auto": 1 if self.impdir else {'$exists': False}},
+                 "$orderby":{"starred":-1},}
+
         item = self.db.download.find_one(query)
         if not item:
             self.logger.info("No Download Request.. Sleeping For Two Minutes")
