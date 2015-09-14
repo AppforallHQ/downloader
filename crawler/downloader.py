@@ -24,7 +24,7 @@ def send_download_status(app, status, extra=None):
 
 
 class Downloader:
-    def __init__(self,db=None):
+    def __init__(self, db=None, impdir=None):
         self.db = db
         logging.basicConfig(filename=("log/downloader-%s.log" % int(time.time())),level=logging.INFO)
         self.logger = logging.getLogger(__name__)
@@ -56,7 +56,7 @@ class Downloader:
 
         self.config = {
             'dldir' : settings.DOWNLOAD_DIRECTORY,
-            'impdir' : settings.IMPORTER_DIRECTORY,
+            'impdir' : impdir if impdir else settings.IMPORTER_DIRECTORY,
             'downloadmanager' : settings.DOWNLOAD_MANAGER
         }
         if not path.exists(path.abspath(self.config['dldir'])):
