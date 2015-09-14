@@ -26,6 +26,7 @@ def send_download_status(app, status, extra=None):
 class Downloader:
     def __init__(self, db=None, impdir=None):
         self.db = db
+        self.impdir = impdir
         logging.basicConfig(filename=("log/downloader-%s.log" % int(time.time())),level=logging.INFO)
         self.logger = logging.getLogger(__name__)
         handler = graypy.GELFHandler(settings.LOGSTASH_GELF_HOST, settings.LOGSTASH_GELF_PORT)
@@ -85,7 +86,7 @@ class Downloader:
 
     def downloadOne(self):
         query = {"$query":{"canDownload":1},"$orderby":{"starred":-1}}
-        if self.db:
+        if self.impdir:
             query["auto"] = 1
         item = self.db.download.find_one(query)
         if not item:
