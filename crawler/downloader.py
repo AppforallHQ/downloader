@@ -24,8 +24,9 @@ def send_download_status(app, status, extra=None):
 
 
 class Downloader:
-    def __init__(self,db=None):
+    def __init__(self, db=None, impdir=None):
         self.db = db
+        self.impdir = impdir
         logging.basicConfig(filename=("log/downloader-%s.log" % int(time.time())),level=logging.INFO)
         self.logger = logging.getLogger(__name__)
         handler = graypy.GELFHandler(settings.LOGSTASH_GELF_HOST, settings.LOGSTASH_GELF_PORT)
@@ -56,7 +57,7 @@ class Downloader:
 
         self.config = {
             'dldir' : settings.DOWNLOAD_DIRECTORY,
-            'impdir' : settings.IMPORTER_DIRECTORY,
+            'impdir' : impdir if impdir else settings.IMPORTER_DIRECTORY,
             'downloadmanager' : settings.DOWNLOAD_MANAGER
         }
         if not path.exists(path.abspath(self.config['dldir'])):
@@ -84,7 +85,11 @@ class Downloader:
         return flag
 
     def downloadOne(self):
-        item = self.db.download.find_one({"$query":{"canDownload":1},"$orderby":{"starred":-1}})
+        query = {"$query":{"canDownload":1,
+                           "auto": 1 if self.impdir else {'$exists': False}},
+                 "$orderby":{"starred":-1},}
+
+        item = self.db.download.find_one(query)
         if not item:
             self.logger.info("No Download Request.. Sleeping For Two Minutes")
             time.sleep(120)
