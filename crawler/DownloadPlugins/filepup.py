@@ -66,7 +66,7 @@ class FilePup(DownloadPlugin):
         if r.status_code != 200:
             return None
         mt = re.search("(http://www\\.filepup\\.net/get/.+?)\\'",r.text)
-        if not len(mt):
+        if not mt:
             return None
         try:
             finalurl = mt.group(1)
