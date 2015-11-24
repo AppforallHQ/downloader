@@ -61,14 +61,15 @@ class FilePup(DownloadPlugin):
         else:
             return None
         time.sleep(5)
-        r = requests.get(link,cookies=self.cookies,headers={"User-Agent":self.user_agent})
+        res = requests.get(link,cookies=self.cookies,headers={"User-Agent":self.user_agent})
+
         if r.status_code != 200:
             return None
-        mt = re.findall("window\\.location(\\s*)=(\\s*)\"([^\"]*)\"",r.text)
-        if len(mt) < 1:
+        mt = re.search("(http://www\\.filepup\\.net/get/.+?)\\'",r.text)
+        if not len(mt):
             return None
         try:
-            finalurl = mt[0][2]
+            finalurl = mt.group(1)
             dlmanager.SetLink(finalurl)
             dlmanager.PostData("task","download")
         except:
