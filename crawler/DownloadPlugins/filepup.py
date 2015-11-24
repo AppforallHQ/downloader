@@ -72,7 +72,8 @@ class FilePup(DownloadPlugin):
             finalurl = mt.group(1)
             dlmanager.SetLink(finalurl)
             dlmanager.PostData("task","download")
-        except:
+        except Exception as e:
+            logger.info(e)
             return None
         try:
             dlmanager.SetSpeedLimit(524288)
