@@ -63,9 +63,9 @@ class FilePup(DownloadPlugin):
         time.sleep(5)
         res = requests.get(link,cookies=self.cookies,headers={"User-Agent":self.user_agent})
 
-        if r.status_code != 200:
+        if res.status_code != 200:
             return None
-        mt = re.search("(http://www\\.filepup\\.net/get/.+?)\\'",r.text)
+        mt = re.search("(http://www\\.filepup\\.net/get/.+?)\\'",res.text)
         if not mt:
             return None
         try:
