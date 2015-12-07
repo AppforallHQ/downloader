@@ -27,7 +27,8 @@ class Downloader:
     def __init__(self, db=None, impdir=None):
         self.db = db
         self.impdir = impdir
-        logging.basicConfig(filename=("log/downloader-%s.log" % int(time.time())),level=logging.INFO)
+        # logging.basicConfig(filename=("log/downloader-%s.log" % int(time.time())),level=logging.INFO)
+        logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
         handler = graypy.GELFHandler(settings.LOGSTASH_GELF_HOST, settings.LOGSTASH_GELF_PORT)
         self.logger.addHandler(handler)
