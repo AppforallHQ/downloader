@@ -12,7 +12,7 @@ import settings
 analytics.write_key = ''
 
 analytics.identify('downloader', traits={
-	'email': '+downloader@PROJECT..com',
+	'email': '+downloader@PROJECT.com',
 })
 
 def send_download_status(app, status, extra=None):

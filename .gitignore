@@ -4,7 +4,7 @@ core/local_settings.py
 data/
 *~
 
-requests/local_settings.py
+crawler/local_settings.py
 
 *.sqlite
 
@@ -89,5 +89,5 @@ Network Trash Folder
 Temporary Items
 .apdisk
 .idea
-requests/tmp
+crawler/tmp
 importer/local_settings.py
