@@ -9,10 +9,10 @@ from pymongo import MongoClient
 
 import settings
 
-analytics.write_key = ''
+analytics.write_key = settings.ANALYTICS_KEY
 
 analytics.identify('downloader', traits={
-	'email': '+downloader@PROJECT.com',
+	'email': settings.REPORT_EMAIL,
 })
 
 def send_download_status(app, status, extra=None):

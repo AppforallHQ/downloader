@@ -10,6 +10,8 @@ LOGSTASH_GELF_HOST = ""
 LOGSTASH_GELF_PORT = ""
 TURBOBIT_USER = ''
 TURBOBIT_PASS = ""
+ANALYTICS_KEY = ""
+REPORT_EMAIL = ""
 
 try:
 	from local_settings import *
