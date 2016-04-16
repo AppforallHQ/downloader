@@ -8,7 +8,7 @@ Mongo interface.
 
 - Direct download request from commandline
 - Automatic download request from other apps using Mongo interface
-- Support multiple upload services in paid versin ([filepup](http://filepup.net), [fileshack](http://fileshack.net), [turbobit](http://turbobit.com/))
+- Support multiple upload services in paid version ([filepup](http://filepup.net), [fileshack](http://fileshack.net), [turbobit](http://turbobit.com/))
 - Report download status using [Segment](http://segment.com)
 
 ## Getting Started
